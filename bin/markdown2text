@@ -1,0 +1,7 @@
+#!/bin/bash
+
+type -t "${MARKDOWN2HTML%% *}" >/dev/null || MARKDOWN2HTML=markdown
+type -t "${MARKDOWN2HTML%% *}" >/dev/null || MARKDOWN2HTML=markdown-it
+type -t "${MARKDOWN2HTML%% *}" >/dev/null || { echo >&2 "ERROR: No markdown2html converter installed."; exit 3; }
+
+$MARKDOWN2HTML "$@" | html2text
