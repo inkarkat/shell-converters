@@ -1,0 +1,81 @@
+#!/bin/bash
+
+printUsage()
+{
+    cat <<HELPTEXT
+Convert (some basic) ANSI escape sequences to HTML format [with each line
+wrapped in TAG] [with http:// URLs turned into a link].
+HELPTEXT
+    printf 'Usage: %q %s\n' "$(basename "$1")" '[-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [-t|--tag TAG] FILE [...] [-?|-h|--help]'
+    printf '       %s%q %s\n' 'cat FILE [...] | '"$(basename "$1")" '[...]'
+}
+
+typeset -a linkSedProcessing=()
+typeset -a tagSedProcessing=()
+while [ $# -ne 0 ]
+do
+    case "$1" in
+	--help|-h|-\?)	shift; printUsage "$0"; exit 0;;
+	--linkify|-l)
+		    shift
+		    readonly urlParsePattern='\(https\?://\)\([^/]\+\)/\([^? ]*/\)\?\([^?/ ]*/\?\)\+\(?[^ ]\+\)\?'
+		    case "$1" in
+			host)	    shift; linkSedProcessing=(-e "s#${urlParsePattern}#<a href=\"&\">\2</a>#g");;
+			path)	    shift; linkSedProcessing=(-e "s#${urlParsePattern}#<a href=\"&\">\3\4</a>#g");;
+			leaf)	    shift; linkSedProcessing=(-e "s#${urlParsePattern}#<a href=\"&\">\4</a>#g");;
+			noquery)    shift; linkSedProcessing=(-e "s#${urlParsePattern}#<a href=\"&\">\2/\3\4</a>#g");;
+			noprotocol) shift; linkSedProcessing=(-e "s#${urlParsePattern}#<a href=\"&\">\2/\3\4\5</a>#g");;
+			whole)	    shift; linkSedProcessing=(-e "s#${urlParsePattern}#<a href=\"&\">&</a>#g");;
+			*)		   linkSedProcessing=(-e "s#${urlParsePattern}#<a href=\"&\">&</a>#g");;
+		    esac
+		    ;;
+	--tag|-t)   shift
+		    if [ "$1" = 'pre' ]; then
+			tagSedProcessing=(-e '1i<pre>' -e '$a</pre>')
+		    elif [ "$1" = 'br' -o "$1" = 'br/' ]; then
+			tagSedProcessing=(-e "s#\$#<${1}>#")
+		    else
+			tagSedProcessing=(-e "s#.*#<${1}>&</${1}>#")
+		    fi
+		    shift
+		    ;;
+	--)	    shift; break;;
+	*)	    break;;
+    esac
+done
+
+sed -e 's@&@\&amp;@g' -e 's@<@\&lt;@g' -e 's@>@\&gt;@g' \
+    -e 's@\[\(00\?;\)\?30m\([^]*\)\[0\{0,2\}m@<font color="#2e3436">\2</font>@' \
+    -e 's@\[\(00\?;\)\?31m\([^]*\)\[0\{0,2\}m@<font color="#cc0000">\2</font>@' \
+    -e 's@\[\(00\?;\)\?32m\([^]*\)\[0\{0,2\}m@<font color="#4e9a96">\2</font>@' \
+    -e 's@\[\(00\?;\)\?33m\([^]*\)\[0\{0,2\}m@<font color="#c4a000">\2</font>@' \
+    -e 's@\[\(00\?;\)\?34m\([^]*\)\[0\{0,2\}m@<font color="#3565a4">\2</font>@' \
+    -e 's@\[\(00\?;\)\?35m\([^]*\)\[0\{0,2\}m@<font color="#75507b">\2</font>@' \
+    -e 's@\[\(00\?;\)\?36m\([^]*\)\[0\{0,2\}m@<font color="#06989a">\2</font>@' \
+    -e 's@\[\(00\?;\)\?37m\([^]*\)\[0\{0,2\}m@<font color="#d3d7cf">\2</font>@' \
+    -e 's@\[0\?1m\([^]*\)\[0\{0,2\}m@<b>\1</b>@' \
+    -e 's@\[0\?3m\([^]*\)\[0\{0,2\}m@<i>\1</i>@' \
+    -e 's@\[0\?4m\([^]*\)\[0\{0,2\}m@<u>\1</u>@' \
+    -e 's@\[0\?5m\([^]*\)\[0\{0,2\}m@<blink>\1</blink>@' \
+    -e 's@\[0\?8m\([^]*\)\[0\{0,2\}m@<span style="color: transparent">\1</span>@' \
+    -e 's@\[0\?9m\([^]*\)\[0\{0,2\}m@<del>\1</del>@' \
+    -e 's@\[0\?1;30m\([^]*\)\[0\{0,2\}m@<font style="font-weight: bold" color="#555753">\1</font>@' \
+    -e 's@\[0\?1;31m\([^]*\)\[0\{0,2\}m@<font style="font-weight: bold" color="#ef2929">\1</font>@' \
+    -e 's@\[0\?1;32m\([^]*\)\[0\{0,2\}m@<font style="font-weight: bold" color="#8ae234">\1</font>@' \
+    -e 's@\[0\?1;33m\([^]*\)\[0\{0,2\}m@<font style="font-weight: bold" color="#fce94f">\1</font>@' \
+    -e 's@\[0\?1;34m\([^]*\)\[0\{0,2\}m@<font style="font-weight: bold" color="#729fcf">\1</font>@' \
+    -e 's@\[0\?1;35m\([^]*\)\[0\{0,2\}m@<font style="font-weight: bold" color="#ad7fa8">\1</font>@' \
+    -e 's@\[0\?1;36m\([^]*\)\[0\{0,2\}m@<font style="font-weight: bold" color="#34e2e2">\1</font>@' \
+    -e 's@\[0\?1;37m\([^]*\)\[0\{0,2\}m@<font style="font-weight: bold" color="#eeeeec">\1</font>@' \
+    -e 's@\[0\?4m\([^]*\)\[0\{0,2\}m@<i>\1</i>@' \
+    -e 's@\[0\?4;30m\([^]*\)\[0\{0,2\}m@<font style="font-style: italic" color="#2e3436">\1</font>@' \
+    -e 's@\[0\?4;31m\([^]*\)\[0\{0,2\}m@<font style="font-style: italic" color="#cc0000">\1</font>@' \
+    -e 's@\[0\?4;32m\([^]*\)\[0\{0,2\}m@<font style="font-style: italic" color="#4e9a96">\1</font>@' \
+    -e 's@\[0\?4;33m\([^]*\)\[0\{0,2\}m@<font style="font-style: italic" color="#c4a000">\1</font>@' \
+    -e 's@\[0\?4;34m\([^]*\)\[0\{0,2\}m@<font style="font-style: italic" color="#3565a4">\1</font>@' \
+    -e 's@\[0\?4;35m\([^]*\)\[0\{0,2\}m@<font style="font-style: italic" color="#75507b">\1</font>@' \
+    -e 's@\[0\?4;36m\([^]*\)\[0\{0,2\}m@<font style="font-style: italic" color="#06989a">\1</font>@' \
+    -e 's@\[0\?4;37m\([^]*\)\[0\{0,2\}m@<font style="font-style: italic" color="#d3d7cf">\1</font>@' \
+    "${linkSedProcessing[@]}" \
+    "${tagSedProcessing[@]}" \
+    "$@"
