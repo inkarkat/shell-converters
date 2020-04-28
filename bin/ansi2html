@@ -1,13 +1,32 @@
 #!/bin/bash
 
-printUsage()
+printShortUsage()
 {
-    cat <<HELPTEXT
-Convert (some basic) ANSI escape sequences to HTML format [with each line
-wrapped in TAG] [with http:// URLs turned into a link].
-HELPTEXT
+    # Note: short followed by long option; if the user knows the short one, she can
+    # skim the long one.
     printf 'Usage: %q %s\n' "$(basename "$1")" '[-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [-t|--tag TAG] FILE [...] [-?|-h|--help]'
     printf '       %s%q %s\n' 'cat FILE [...] | '"$(basename "$1")" '[...]'
+}
+printUsage()
+{
+    # This is the short help when launched with no or incorrect arguments.
+    # It is printed to stderr to avoid accidental processing.
+    printShortUsage "$1" >&2
+    printf >&2 'Try %q --help for more information.\n' "$(basename "$1")"
+}
+printLongUsage()
+{
+    # This is the long "man page" when launched with the help argument.
+    # It is printed to stdout to allow paging with 'more'.
+    cat <<HELPDESCRIPTION
+Convert (some basic) ANSI escape sequences to HTML format [with each line
+wrapped in TAG] [with http:// URLs turned into a link].
+HELPDESCRIPTION
+    echo
+    printShortUsage "$1"
+    cat <<HELPTEXT
+
+HELPTEXT
 }
 
 typeset -a linkSedProcessing=()
@@ -15,7 +34,7 @@ typeset -a tagSedProcessing=()
 while [ $# -ne 0 ]
 do
     case "$1" in
-	--help|-h|-\?)	shift; printUsage "$0"; exit 0;;
+	--help|-h|-\?)	shift; printLongUsage "$0"; exit 0;;
 	--linkify|-l)
 		    shift
 		    readonly urlParsePattern='\(https\?://\)\([^/]\+\)/\([^? ]*/\)\?\([^?/ ]*/\?\)\+\(?[^ ]\+\)\?'
