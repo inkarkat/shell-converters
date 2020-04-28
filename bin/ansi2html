@@ -21,6 +21,13 @@ printLongUsage()
     cat <<HELPDESCRIPTION
 Convert (some basic) ANSI escape sequences to HTML format [with each line
 wrapped in TAG] [with http:// URLs turned into a link].
+
+SEE ALSO:
+- aha
+- ansi2html from HTML::FronANSI Perl module at
+  http://search.cpan.org/~nuffin/HTML-FromANSI-2.03/lib/HTML/FromANSI.pm
+- ansi2html.sh by pixelb at
+  https://github.com/pixelb/scripts/blob/master/scripts/ansi2html.sh
 HELPDESCRIPTION
     echo
     printShortUsage "$1"
