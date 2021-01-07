@@ -1,0 +1,65 @@
+#!/bin/bash
+
+printUsage()
+{
+    cat <<HELPTEXT
+Convert the simple HTML subset of the pango markup language
+(https://developer.gnome.org/pygtk/stable/pango-markup-language.html) that is
+used by zenity to ANSI escape sequences.
+HELPTEXT
+    echo
+    printf 'Usage: %q %s\n' "$(basename "$1")" 'FILE [...] [-?|-h|--help]'
+    printf 'Usage: cat FILE [...] | %q %s\n' "$(basename "$1")" ''
+}
+case "$1" in
+    --help|-h|-\?)	shift; printUsage "$0"; exit 0;;
+    --)			shift;;
+esac
+
+awk -F '[<>]' \
+'
+BEGIN {
+    OFS=""
+    PROCINFO["sorted_in"] = "@ind_str_asc"
+}
+function joinedAttributes(      result, sep, attr)
+{
+    result = "0"
+    for (attr in attributes) {
+	result = result ";" attr
+    }
+    return "[" result "m"
+}
+function push(attribute)
+{
+    attributes[attribute] = 1
+    return joinedAttributes()
+}
+function pop(attribute)
+{
+    delete attributes[attribute]
+    return joinedAttributes()
+}
+{
+    for (i = 1; i <= NF; ++i) {
+	switch ($i) {
+	    case "b":	    { $i = push("01"); break; }
+	    case "/b":	    { $i = pop("01"); break; }
+	    case "big":	    { $i = push("01;36"); break; }
+	    case "/big":    { $i = pop("01;36"); break; }
+	    case "i":	    { $i = push("03"); break; }
+	    case "/i":	    { $i = pop("03"); break; }
+	    case "s":	    { $i = push("09"); break; }
+	    case "/s":	    { $i = pop("09"); break; }
+	    case "small":   { $i = push("37"); break; }
+	    case "/small":  { $i = pop("37"); break; }
+	    case "tt":	    { $i = push("47"); break; }
+	    case "/tt":	    { $i = pop("47"); break; }
+	    case "u":	    { $i = push("04"); break; }
+	    case "/u":	    { $i = pop("04"); break; }
+	    case /\/?su[bp]/:	{ $i = ""; break; }
+	}
+    }
+    print
+}
+' "$@"
