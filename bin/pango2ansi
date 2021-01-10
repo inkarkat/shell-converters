@@ -60,6 +60,11 @@ function pop(attribute)
 	    case /\/?su[bp]/:	{ $i = ""; break; }
 	}
     }
+
+    gsub(/&lt;/, "<")
+    gsub(/&gt;/, ">")
+    gsub(/&amp;/, "\\&")
+
     print
 }
 ' "$@"
