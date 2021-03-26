@@ -61,6 +61,8 @@ function pop(attribute)
 	}
     }
 
+    $0 = gensub(/\\([^\\])/, "\\1", "g")
+    gsub(/\\\\/, "\\")
     gsub(/&lt;/, "<")
     gsub(/&gt;/, ">")
     gsub(/&amp;/, "\\&")
