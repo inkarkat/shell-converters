@@ -2,7 +2,7 @@
 
 if type -t ruby >/dev/null && ruby -ryaml -rjson -e '#' >/dev/null 2>&1; then
     exec yaml2json.rb "$@"
-elif type -t python3 >/dev/null && python3 -c 'import yaml; import json;' >/dev/null 2>&1; then
+elif type -t python >/dev/null && python -c 'import yaml; import json;' >/dev/null 2>&1; then
     exec yaml2json.py 2 "$@"
 elif type -t json_xs >/dev/null; then
     exec json_xs -f yaml "$@"

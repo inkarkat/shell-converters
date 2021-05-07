@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 '''
 Simple json -> yaml converter
 Source: https://github.com/fourjay/vim-yamsong
