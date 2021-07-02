@@ -82,6 +82,7 @@ sed -e 's@&@\&amp;@g' -e 's@<@\&lt;@g' -e 's@>@\&gt;@g' \
     -e 's@\[0\?3m\([^]*\)\[0\{0,2\}m@<i>\1</i>@g' \
     -e 's@\[0\?4m\([^]*\)\[0\{0,2\}m@<u>\1</u>@g' \
     -e 's@\[0\?5m\([^]*\)\[0\{0,2\}m@<blink>\1</blink>@g' \
+    -e 's@\[0\?7m\([^]*\)\[0\{0,2\}m@<span style="background-color: #fff; filter: invert(100%);">\1</span>@g' \
     -e 's@\[0\?8m\([^]*\)\[0\{0,2\}m@<span style="color: transparent">\1</span>@g' \
     -e 's@\[0\?9m\([^]*\)\[0\{0,2\}m@<del>\1</del>@g' \
     -e 's@\[0\?1;30m\([^]*\)\[0\{0,2\}m@<font style="font-weight: bold" color="#555753">\1</font>@g' \
