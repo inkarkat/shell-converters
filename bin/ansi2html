@@ -27,11 +27,14 @@ HELPDESCRIPTION
     echo
     cat <<HELPTEXT
 SEE ALSO:
-- aha
+- aha (native code), available as Debian package, at
+  https://github.com/theZiz/aha
 - ansi2html from HTML::FronANSI Perl module at
   http://search.cpan.org/~nuffin/HTML-FromANSI-2.03/lib/HTML/FromANSI.pm
 - ansi2html.sh by pixelb at
   https://github.com/pixelb/scripts/blob/master/scripts/ansi2html.sh
+- ansi-to-html Npm package at https://github.com/rburns/ansi-to-html
+- ansi2html Python package at https://github.com/pycontribs/ansi2html
 HELPTEXT
 }
 
