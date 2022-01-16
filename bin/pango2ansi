@@ -8,7 +8,7 @@ Convert the simple HTML subset of the pango markup language
 used by zenity to ANSI escape sequences.
 HELPTEXT
     echo
-    printf 'Usage: %q %s\n' "$(basename "$1")" 'FILE [...] [-?|-h|--help]'
+    printf 'Usage: %q %s\n' "$(basename "$1")" '[--] FILE [...] [-?|-h|--help]'
     printf 'Usage: cat FILE [...] | %q %s\n' "$(basename "$1")" ''
 }
 case "$1" in
