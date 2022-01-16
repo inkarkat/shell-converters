@@ -1,0 +1,25 @@
+#!/bin/bash
+
+printUsage()
+{
+    cat <<HELPTEXT
+Remove the simple HTML subset of the pango markup language
+(https://developer.gnome.org/pygtk/stable/pango-markup-language.html) that is
+used by zenity to ANSI escape sequences.
+HELPTEXT
+    echo
+    printf 'Usage: %q %s\n' "$(basename "$1")" '[--] FILE [...] [-?|-h|--help]'
+    printf 'Usage: cat FILE [...] | %q %s\n' "$(basename "$1")" ''
+}
+case "$1" in
+    --help|-h|-\?)	shift; printUsage "$0"; exit 0;;
+    --)			shift;;
+esac
+
+sed -e 's#</\?\([bisu]\|big\|small\|tt\|su[bp]\)>##g' \
+    -e 's#\\\([^\\]\)#\1#g' \
+    -e 's#\\\\#\\#g' \
+    -e 's#&lt;#<#g' \
+    -e 's#&gt;#>#g' \
+    -e 's#&amp;#\&#g' \
+    -- "$@"
