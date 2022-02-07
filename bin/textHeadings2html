@@ -1,6 +1,0 @@
-#!/bin/bash
-
-# parameter for surrounding text (e.g. wrapping in <pre>)
-# ==== to h1
-# ---- to h2
-# word: to h3 ?
