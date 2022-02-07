@@ -1,0 +1,10 @@
+#!/usr/bin/sed -f
+
+## Escape HTML special characters (&<>).
+##
+## Usage: escapeHtml FILE [...]
+## Usage: cat FILE [...] | escapeHtml
+
+s@&@\&amp;@g
+s@<@\&lt;@g
+s@>@\&gt;@g

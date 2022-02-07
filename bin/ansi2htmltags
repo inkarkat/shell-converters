@@ -335,7 +335,7 @@ typeset -a indexedForegroundColorTranslation=(
 indexedBackgroundColorTranslation=("${indexedForegroundColorTranslation[@]/38;5;/48;5;}")
 indexedBackgroundColorTranslation=("${indexedBackgroundColorTranslation[@]/color:/background-color:}")
 
-sed -e 's@&@\&amp;@g' -e 's@<@\&lt;@g' -e 's@>@\&gt;@g' \
+sed \
     -e 's@\[\(00\?;\)\?30m\([^]*\)\[0\{0,2\}m@<span style="color: #2e3436">\2</span>@g' \
     -e 's@\[\(00\?;\)\?31m\([^]*\)\[0\{0,2\}m@<span style="color: #cc0000">\2</span>@g' \
     -e 's@\[\(00\?;\)\?32m\([^]*\)\[0\{0,2\}m@<span style="color: #4e9a96">\2</span>@g' \
