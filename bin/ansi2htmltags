@@ -4,7 +4,7 @@ printShortUsage()
 {
     # Note: short followed by long option; if the user knows the short one, she can
     # skim the long one.
-    printf 'Usage: %q %s\n' "$(basename "$1")" '[-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [-t|--tag TAG] FILE [...] [-?|-h|--help]'
+    printf 'Usage: %q %s\n' "$(basename "$1")" '[-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [-t|--tag TAG] [--] FILE [...] [-?|-h|--help]'
     printf 'Usage: cat FILE [...] [| escapeHtml] | %q %s\n' "$(basename "$1")" '[...]'
 }
 printUsage()
@@ -70,6 +70,7 @@ do
 		    shift
 		    ;;
 	--)	    shift; break;;
+	-*)	    { echo "ERROR: Unknown option \"$1\"!"; echo; printUsage "$0"; } >&2; exit 2;;
 	*)	    break;;
     esac
 done

@@ -6,7 +6,7 @@ printUsage()
 Convert (some basic) ANSI escape sequences to Markdown format with http:// URLs
 turned into a link.
 HELPTEXT
-    printf 'Usage: %q %s\n' "$(basename "$1")" '[-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] FILE [...] [-?|-h|--help]'
+    printf 'Usage: %q %s\n' "$(basename "$1")" '[-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [--] FILE [...] [-?|-h|--help]'
     printf 'Usage: cat FILE [...] | %q %s\n' "$(basename "$1")" '[...]'
 }
 
@@ -29,6 +29,7 @@ do
 		    esac
 		    ;;
 	--)	    shift; break;;
+	-*)	    { echo "ERROR: Unknown option \"$1\"!"; echo; printUsage "$0"; } >&2; exit 2;;
 	*)	    break;;
     esac
 done
