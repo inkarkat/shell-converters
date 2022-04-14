@@ -4,8 +4,9 @@ printShortUsage()
 {
     # Note: short followed by long option; if the user knows the short one, she can
     # skim the long one.
-    printf 'Usage: %q %s\n' "$(basename "$1")" '[-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [-t|--tag TAGNAME|"TAGNAME ATTR=VALUE ..."] [--] FILE [...] [-?|-h|--help]'
-    printf 'Usage: cat FILE [...] [| escapeHtml] | %q %s\n' "$(basename "$1")" '[...]'
+    printf 'Usage: %q %s\n' "$(basename "$1")" '[-N|--no-html-escaping] [-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [-t|--tag TAGNAME|"TAGNAME ATTR=VALUE ..."] [--] FILE [...] [-?|-h|--help]'
+    printf 'Usage: cat FILE [...] | %q %s\n' "$(basename "$1")" '[...]'
+    printf 'Usage: cat FILE [...] | escapeHtml [| ... ] | %q %s\n' "$(basename "$1")" '-N|--no-html-escaping [...]'
 }
 printUsage()
 {
@@ -21,13 +22,15 @@ printLongUsage()
     cat <<HELPDESCRIPTION
 Convert (some basic) ANSI escape sequences to HTML format [with each line
 wrapped in TAGNAME] [with http:// URLs turned into a link].
-Note: Does not escape HTML special characters; do that in a previous pipeline
-step if necessary.
 HELPDESCRIPTION
     echo
     printShortUsage "$1"
     echo
     cat <<HELPTEXT
+    --no-html-escaping|-N
+			Assume the input already has escaped special HTML
+			characters (&<>) (and maybe has added markup on its own
+			which must not be escaped again here).
     --tag|-t TAGNAME|"TAGNAME ATTR=VALUE ..."
 			Wrap (append for <br>) each line in <TAGNAME>.
 			A <pre> tag instead wraps the entire input once.
@@ -43,12 +46,19 @@ SEE ALSO:
 HELPTEXT
 }
 
+typeset -a escapeHtmlSedProcessing=(
+    -e 's@&@\&amp;@g'
+    -e 's@<@\&lt;@g'
+    -e 's@>@\&gt;@g'
+)
 typeset -a linkSedProcessing=()
 typeset -a tagSedProcessing=()
 while [ $# -ne 0 ]
 do
     case "$1" in
 	--help|-h|-\?)	shift; printLongUsage "$0"; exit 0;;
+	--no-html-escaping|-N)
+			shift; escapeHtmlSedProcessing=();;
 	--linkify|-l)
 		    shift
 		    readonly urlParsePattern='\(https\?://\)\([^/]\+\)/\([^? ]*/\)\?\([^?/ ]*/\?\)\+\(?[^ ]\+\)\?'
@@ -340,6 +350,7 @@ indexedBackgroundColorTranslation=("${indexedForegroundColorTranslation[@]/38;5;
 indexedBackgroundColorTranslation=("${indexedBackgroundColorTranslation[@]/color:/background-color:}")
 
 sed \
+    "${escapeHtmlSedProcessing[@]}" \
     -e 's@\[\(00\?;\)\?30m\([^]*\)\[0\{0,2\}m@<span style="color: #2e3436">\2</span>@g' \
     -e 's@\[\(00\?;\)\?31m\([^]*\)\[0\{0,2\}m@<span style="color: #cc0000">\2</span>@g' \
     -e 's@\[\(00\?;\)\?32m\([^]*\)\[0\{0,2\}m@<span style="color: #4e9a96">\2</span>@g' \
