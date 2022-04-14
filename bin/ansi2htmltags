@@ -5,7 +5,7 @@ printShortUsage()
     # Note: short followed by long option; if the user knows the short one, she can
     # skim the long one.
     printf 'Usage: %q %s\n' "$(basename "$1")" '[-N|--no-html-escaping] [-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [-t|--tag TAGNAME|"TAGNAME ATTR=VALUE ..."] [--] FILE [...] [-?|-h|--help]'
-    printf 'Usage: cat FILE [...] | %q %s\n' "$(basename "$1")" '[...]'
+    printf 'Usage: cat FILE [...] | %q %s [| noansi]\n' "$(basename "$1")" '[...]'
     printf 'Usage: cat FILE [...] | escapeHtml [| ... ] | %q %s\n' "$(basename "$1")" '-N|--no-html-escaping [...]'
 }
 printUsage()
@@ -34,6 +34,10 @@ HELPDESCRIPTION
     --tag|-t TAGNAME|"TAGNAME ATTR=VALUE ..."
 			Wrap (append for <br>) each line in <TAGNAME>.
 			A <pre> tag instead wraps the entire input once.
+
+Note: To avoid accidental left-over ANSI escape sequences (not recognized
+colors, or cursor positioning), pipe the output to noansi.
+
 SEE ALSO:
 - aha (native code), available as Debian package, at
   https://github.com/theZiz/aha
