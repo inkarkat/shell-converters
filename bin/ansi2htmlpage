@@ -1,0 +1,34 @@
+#!/bin/bash
+set -o pipefail
+
+printUsage()
+{
+    cat <<HELPTEXT
+Convert (some basic) ANSI escape sequences to a complete HTML page that shows
+the input as preformatted contents.
+HELPTEXT
+    echo
+    printf 'Usage: %q %s\n' "$(basename "$1")" '[-N|--no-html-escaping] [-t|--title TITLE [-H|--title-heading N]] [-T|--template NAME] [--] FILE [...] [-?|-h|--help]'
+    printf 'Usage: cat FILE [...] | %q %s\n' "$(basename "$1")" '[...]'
+    printf 'Usage: cat FILE [...] | escapeHtml [| ... ] | %q %s\n' "$(basename "$1")" '-N|--no-html-escaping [...]'
+}
+typeset -a ansi2htmlArgs=()
+typeset -a body2htmlArgs=()
+while [ $# -ne 0 ]
+do
+    case "$1" in
+	--help|-h|-\?)	shift; printUsage "$0"; exit 0;;
+	--no-html-escaping|-N)
+			ansi2htmlArgs+=("$1"); shift;;
+	--title|-t|--title-heading|-H|--template|-T)
+			body2htmlArgs+=("$1" "$2"); shift; shift;;
+	--)		shift; break;;
+	-*)		{ echo "ERROR: Unknown option \"$1\"!"; echo; printUsage "$0"; } >&2; exit 2;;
+	*)		break;;
+    esac
+done
+
+
+ansi2htmltags "${ansi2htmlArgs[@]}" "$@" | \
+    noansi | \
+    body2html --wrap-in pre "${body2htmlArgs[@]}"
