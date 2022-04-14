@@ -4,7 +4,7 @@ printShortUsage()
 {
     # Note: short followed by long option; if the user knows the short one, she can
     # skim the long one.
-    printf 'Usage: %q %s\n' "$(basename "$1")" '[-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [-t|--tag TAG] [--] FILE [...] [-?|-h|--help]'
+    printf 'Usage: %q %s\n' "$(basename "$1")" '[-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [-t|--tag TAGNAME|"TAGNAME ATTR=VALUE ..."] [--] FILE [...] [-?|-h|--help]'
     printf 'Usage: cat FILE [...] [| escapeHtml] | %q %s\n' "$(basename "$1")" '[...]'
 }
 printUsage()
@@ -20,14 +20,17 @@ printLongUsage()
     # It is printed to stdout to allow paging with 'more'.
     cat <<HELPDESCRIPTION
 Convert (some basic) ANSI escape sequences to HTML format [with each line
-wrapped in TAG] [with http:// URLs turned into a link].
-Note: It does not escape HTML special characters; do that in a previous pipeline
+wrapped in TAGNAME] [with http:// URLs turned into a link].
+Note: Does not escape HTML special characters; do that in a previous pipeline
 step if necessary.
 HELPDESCRIPTION
     echo
     printShortUsage "$1"
     echo
     cat <<HELPTEXT
+    --tag|-t TAGNAME|"TAGNAME ATTR=VALUE ..."
+			Wrap (append for <br>) each line in <TAGNAME>.
+			A <pre> tag instead wraps the entire input once.
 SEE ALSO:
 - aha (native code), available as Debian package, at
   https://github.com/theZiz/aha
@@ -60,12 +63,12 @@ do
 		    esac
 		    ;;
 	--tag|-t)   shift
-		    if [ "$1" = 'pre' ]; then
-			tagSedProcessing=(-e '1i<pre>' -e '$a</pre>')
-		    elif [ "$1" = 'br' -o "$1" = 'br/' ]; then
+		    if [ "${1%% *}" = 'pre' ]; then
+			tagSedProcessing=(-e "1i<${1}>" -e "\$a</${1%% *}>")
+		    elif [ "${1%% *}" = 'br' -o "$1" = 'br/' ]; then
 			tagSedProcessing=(-e "s#\$#<${1}>#")
 		    else
-			tagSedProcessing=(-e "s#.*#<${1}>&</${1}>#")
+			tagSedProcessing=(-e "s#.*#<${1}>&</${1%% *}>#")
 		    fi
 		    shift
 		    ;;
