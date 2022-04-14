@@ -1,4 +1,5 @@
 #!/bin/bash
+set -o pipefail
 
 printUsage()
 {
@@ -6,15 +7,18 @@ printUsage()
 Convert (some basic) ANSI escape sequences to Markdown format with http:// URLs
 turned into a link.
 HELPTEXT
-    printf 'Usage: %q %s\n' "$(basename "$1")" '[-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [--] FILE [...] [-?|-h|--help]'
+    printf 'Usage: %q %s\n' "$(basename "$1")" '[-N|--no-html-escaping] [-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [--] FILE [...] [-?|-h|--help]'
     printf 'Usage: cat FILE [...] | %q %s\n' "$(basename "$1")" '[...]'
 }
 
+typeset -a ansi2htmlArgs=()
 typeset -a linkSedProcessing=()
 while [ $# -ne 0 ]
 do
     case "$1" in
 	--help|-h|-\?)	shift; printUsage "$0"; exit 0;;
+	--no-html-escaping|-N)
+			ansi2htmlArgs+=("$1"); shift;;
 	--linkify|-l)
 		    shift
 		    readonly urlParsePattern='\(https\?://\)\([^/]\+\)/\([^? ]*/\)\?\([^?/ ]*/\?\)\+\(?[^ ]\+\)\?'
@@ -34,10 +38,10 @@ do
     esac
 done
 
-escapeHtml "$@" | \
-    sed -e 's@^ \{1,3\}\([^ ]\)@    \1@; t' \
-	-e 's@^\[0\?1m\([^]*\)\[0\{0,2\}m$@### \1\n@' \
-	-e 's@\[0\?1m\([^]*\)\[0\{0,2\}m@**\1**@' \
-	-e 's@\[0\?3m\([^]*\)\[0\{0,2\}m@_\1_@' \
-	"${linkSedProcessing[@]}" | \
-    ansi2htmltags
+sed -e 's@^ \{1,3\}\([^ ]\)@    \1@; t' \
+    -e 's@^\[0\?1m\([^]*\)\[0\{0,2\}m$@### \1\n@' \
+    -e 's@\[0\?1m\([^]*\)\[0\{0,2\}m@**\1**@' \
+    -e 's@\[0\?3m\([^]*\)\[0\{0,2\}m@_\1_@' \
+    "${linkSedProcessing[@]}" "$@" | \
+	"${ANSI2HTML:-ansi2htmltags}" "${ansi2htmlArgs[@]}" | \
+	noansi
