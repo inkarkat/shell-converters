@@ -21,7 +21,7 @@ printLongUsage()
     # It is printed to stdout to allow paging with 'more'.
     cat <<HELPDESCRIPTION
 Convert (some basic) ANSI escape sequences to HTML format [with each line
-wrapped in TAGNAME] [with http:// URLs turned into a link].
+wrapped in TAGNAME] [with http(s):// URLs turned into a link].
 HELPDESCRIPTION
     echo
     printShortUsage "$1"
@@ -31,6 +31,16 @@ HELPDESCRIPTION
 			Assume the input already has escaped special HTML
 			characters (&<>) (and maybe has added markup on its own
 			which must not be escaped again here).
+    --linkify|-l [whole]
+			Use the entire URL as the link text. (This is the
+			default.)
+    --linkify|-l noprotocol
+			Drop the http(s):// protocol prefix for the link text.
+    --linkify|-l noquery
+			Use hostname + path for the link text.
+    --linkify|-l host	Use only the hostname for the link text.
+    --linkify|-l path	Use only the path (without leading /) for the link text.
+    --linkify|-l leaf	Use only the name of the HTML page for the link text.
     --tag|-t TAGNAME|"TAGNAME ATTR=VALUE ..."
 			Wrap (append for <br>) each line in <TAGNAME>.
 			A <pre> tag instead wraps the entire input once.
