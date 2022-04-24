@@ -3,12 +3,15 @@ set -o pipefail
 
 printUsage()
 {
-    cat <<HELPTEXT
-Convert (some basic) ANSI escape sequences to Markdown format with http:// URLs
-turned into a link.
-HELPTEXT
-    printf 'Usage: %q %s\n' "$(basename "$1")" '[-N|--no-html-escaping] [-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [--] FILE [...] [-?|-h|--help]'
-    printf 'Usage: cat FILE [...] | %q %s\n' "$(basename "$1")" '[...]'
+    ansi2htmltags --help 2>&1 | sed \
+	-e '1s#^.*$#Convert (some basic) ANSI escape sequences to Markdown format [with http(s):// URLs turned into a link].#' \
+	-e '2b removeFirstParagraphLoop' \
+	-e '/^ *--tag|-t/b removeOptionLoop' \
+	-e '/^SEE ALSO:$/,$d' \
+	-e '/^Usage:$/N' -e '/\(^\|\n\)Usage: */{ s/\(^\|\n\)\(Usage: *\)\?\([^ ]\+ \)*ansi2htmltags /\1\2'"$(basename "$1")"' /; s/\[-t|--tag [^]]\+\]// }' \
+	-e '/^Example:$/N' -e '/\(^\|\n\)Example: */{ s/\(^\|\n\)\(Example: *\)\?ansi2htmltags .*/\1\2'"$(basename "$1") -n / }" \
+	-e b -e :removeFirstParagraphLoop -e '{ /\(^\|\n\)$/{ s/^\(.*\n\)\?//; b; }; N; b removeFirstParagraphLoop }' \
+	-e b -e :removeOptionLoop -e '{ /\n *--tag|-t[^\n]*$/{ N; b removeOptionLoop; }; /\n *--[^\n]*$\|\n[^	 ]\|\n$/{ s/^\(.*\n\)\?//; b; }; N; b removeOptionLoop }'
 }
 
 typeset -a ansi2htmlArgs=()
