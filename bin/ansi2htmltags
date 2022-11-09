@@ -6,7 +6,7 @@ printShortUsage()
     # skim the long one.
     printf 'Usage: %q %s\n' "$(basename "$1")" '[-N|--no-html-escaping] [-l|--linkify [whole|noprotocol|noquery|host|path|leaf]] [-t|--tag TAGNAME|"TAGNAME ATTR=VALUE ..."] [--] FILE [...] [-?|-h|--help]'
     printf 'Usage: cat FILE [...] | %q %s [| noansi]\n' "$(basename "$1")" '[...]'
-    printf 'Usage: cat FILE [...] | escapeHtml [| ... ] | %q %s\n' "$(basename "$1")" '-N|--no-html-escaping [...]'
+    printf 'Usage: cat FILE [...] | htmlEscape [| ... ] | %q %s\n' "$(basename "$1")" '-N|--no-html-escaping [...]'
 }
 printUsage()
 {

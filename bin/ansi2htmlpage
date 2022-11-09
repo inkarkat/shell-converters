@@ -10,7 +10,7 @@ HELPTEXT
     echo
     printf 'Usage: %q %s\n' "$(basename "$1")" '[-N|--no-html-escaping] [-t|--title TITLE [-H|--title-heading N]] [-T|--template NAME] [--] FILE [...] [-?|-h|--help]'
     printf 'Usage: cat FILE [...] | %q %s\n' "$(basename "$1")" '[...]'
-    printf 'Usage: cat FILE [...] | escapeHtml [| ... ] | %q %s\n' "$(basename "$1")" '-N|--no-html-escaping [...]'
+    printf 'Usage: cat FILE [...] | htmlEscape [| ... ] | %q %s\n' "$(basename "$1")" '-N|--no-html-escaping [...]'
 }
 typeset -a ansi2htmlArgs=()
 typeset -a body2htmlArgs=()

@@ -2,8 +2,8 @@
 
 ## Escape HTML special characters (&<>).
 ##
-## Usage: escapeHtml FILE [...]
-## Usage: cat FILE [...] | escapeHtml
+## Usage: htmlEscape FILE [...]
+## Usage: cat FILE [...] | htmlEscape
 
 s@&@\&amp;@g
 s@<@\&lt;@g
