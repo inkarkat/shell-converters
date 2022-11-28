@@ -6,15 +6,17 @@ printUsage()
     ansi2htmltags --help 2>&1 | sed \
 	-e '1s#^.*$#Convert (some basic) ANSI escape sequences to Markdown format [with http(s):// URLs turned into a link].#' \
 	-e '2b removeFirstParagraphLoop' \
-	-e '/^ *--tag|-t/b removeOptionLoop' \
+	-e '/^ *--tag|-t/i\
+    --tag|-t ```[INFO-STRING]\n			Wrap in a fenced code block.' \
 	-e '/^SEE ALSO:$/,$d' \
-	-e '/^Usage:$/N' -e '/\(^\|\n\)Usage: */{ s/\(^\|\n\)\(Usage: *\)\?\([^ ]\+ \)*ansi2htmltags /\1\2'"$(basename "$1")"' /; s/\[-t|--tag [^]]\+\]// }' \
+	-e '/^Usage:$/N' -e '/\(^\|\n\)Usage: */{ s/\(^\|\n\)\(Usage: *\)\?\([^ ]\+ \)*ansi2htmltags /\1\2'"$(basename "$1")"' /; s/\[-t|--tag [^]]\+/&|```/ }' \
 	-e '/^Example:$/N' -e '/\(^\|\n\)Example: */{ s/\(^\|\n\)\(Example: *\)\?ansi2htmltags .*/\1\2'"$(basename "$1") -n / }" \
 	-e b -e :removeFirstParagraphLoop -e '{ /\(^\|\n\)$/{ s/^\(.*\n\)\?//; b; }; N; b removeFirstParagraphLoop }' \
 	-e b -e :removeOptionLoop -e '{ /\n *--tag|-t[^\n]*$/{ N; b removeOptionLoop; }; /\n *--[^\n]*$\|\n[^	 ]\|\n$/{ s/^\(.*\n\)\?//; b; }; N; b removeOptionLoop }'
 }
 
 typeset -a ansi2htmlArgs=()
+typeset -a additionalSedProcessing=()
 typeset -a linkSedProcessing=()
 while [ $# -ne 0 ]
 do
@@ -22,6 +24,14 @@ do
 	--help|-h|-\?)	shift; printUsage "$0"; exit 0;;
 	--no-html-escaping|-N)
 			ansi2htmlArgs+=("$1"); shift;;
+	--tag|-t)
+			case "$2" in
+			    \`\`\`*)
+				additionalSedProcessing+=(-e $'1i\\\n'"$2" -e $'$a\\\n```');;
+			    *)	ansi2htmlArgs+=("$1" "$2");;
+			esac
+			shift; shift
+			;;
 	--linkify|-l)
 		    shift
 		    readonly urlParsePattern='\(https\?://\)\([^/]\+\)/\([^? ]*/\)\?\([^?/ ]*/\?\)\+\(?[^ ]\+\)\?'
@@ -41,7 +51,8 @@ do
     esac
 done
 
-sed -e 's@^ \{1,3\}\([^ ]\)@    \1@; t' \
+sed "${additionalSedProcessing[@]}" \
+    -e 's@^ \{1,3\}\([^ ]\)@    \1@; t' \
     -e 's@^\[0\?1m\([^]*\)\[0\{0,2\}m$@### \1\n@' \
     -e 's@\[0\?1m\([^]*\)\[0\{0,2\}m@**\1**@' \
     -e 's@\[0\?3m\([^]*\)\[0\{0,2\}m@_\1_@' \
