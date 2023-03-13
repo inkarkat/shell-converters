@@ -1,0 +1,25 @@
+#!/usr/bin/sed -f
+
+## Escape Markdown special characters.
+##
+## Usage: markdownEscape FILE [...]
+## Usage: cat FILE [...] | markdownEscape
+
+# Source: https://talk.commonmark.org/t/can-we-have-formal-escaping-rules/2624/5
+
+# Escape known special characters.
+s@[][\\`*_{}()#+.!>~-]@\\&@g
+
+# Prevent code blocks which are indented by at least 4 spaces or one tab.
+t next
+:next
+s@^\t@\&nbsp;\&nbsp;\&nbsp;\&nbsp;\&nbsp;\&nbsp;\&nbsp;\&nbsp;@
+s@^ \{4\}@\&nbsp;\&nbsp;\&nbsp;\&nbsp;@
+:escapeIndent
+s@^\(\(&nbsp;\)\+\)\t@\1\&nbsp;\&nbsp;\&nbsp;\&nbsp;\&nbsp;\&nbsp;\&nbsp;\&nbsp;@
+s@^\(\(&nbsp;\)\+\) @\1\&nbsp;@
+t escapeIndent
+
+# All newlines should be preserved (two spaces at the end are an explicit line
+# break).
+/  $/!s@$@  @
