@@ -8,7 +8,16 @@
 # Source: https://talk.commonmark.org/t/can-we-have-formal-escaping-rules/2624/5
 
 # Escape known special characters.
-s@[][\\`*_{}()#+.!>~-]@\\&@g
+s@[][\\`*_{}()#!~]@\\&@g
+
+# Only escape +-. at the beginning of lines where they create lists.
+s@^\([[:space:]]*\)\([+-]\)\([[:space:]]\)@\1\\\2\3@
+s@^\([[:space:]]*[[:digit:]]\+\)\(\.\)\([[:space:]]\)@\1\\\2\3@
+
+# Escape HTML special characters (&<>).
+s@&@\&amp;@g
+s@<@\&lt;@g
+s@>@\&gt;@g
 
 # Prevent code blocks which are indented by at least 4 spaces or one tab.
 t next
@@ -21,5 +30,5 @@ s@^\(\(&nbsp;\)\+\) @\1\&nbsp;@
 t escapeIndent
 
 # All newlines should be preserved (two spaces at the end are an explicit line
-# break).
-/  $/!s@$@  @
+# break) - an empty line naturally adds a break.
+/^$\|  $/!s@$@  @
