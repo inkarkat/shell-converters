@@ -26,5 +26,5 @@ s@^\(\(&nbsp;\)\+\) @\1\&nbsp;@
 t escapeIndent
 
 # All newlines should be preserved (two spaces at the end are an explicit line
-# break).
-/  $/!s@$@  @
+# break) - an empty line naturally adds a break.
+/^$\|  $/!s@$@  @
