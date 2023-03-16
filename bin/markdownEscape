@@ -8,7 +8,11 @@
 # Source: https://talk.commonmark.org/t/can-we-have-formal-escaping-rules/2624/5
 
 # Escape known special characters.
-s@[][\\`*_{}()#+.!~-]@\\&@g
+s@[][\\`*_{}()#!~]@\\&@g
+
+# Only escape +-. at the beginning of lines where they create lists.
+s@^\([[:space:]]*\)\([+-]\)\([[:space:]]\)@\1\\\2\3@
+s@^\([[:space:]]*[[:digit:]]\+\)\(\.\)\([[:space:]]\)@\1\\\2\3@
 
 # Escape HTML special characters (&<>).
 s@&@\&amp;@g
