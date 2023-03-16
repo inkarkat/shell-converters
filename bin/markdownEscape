@@ -8,7 +8,12 @@
 # Source: https://talk.commonmark.org/t/can-we-have-formal-escaping-rules/2624/5
 
 # Escape known special characters.
-s@[][\\`*_{}()#+.!>~-]@\\&@g
+s@[][\\`*_{}()#+.!~-]@\\&@g
+
+# Escape HTML special characters (&<>).
+s@&@\&amp;@g
+s@<@\&lt;@g
+s@>@\&gt;@g
 
 # Prevent code blocks which are indented by at least 4 spaces or one tab.
 t next
