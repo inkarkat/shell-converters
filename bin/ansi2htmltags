@@ -367,7 +367,7 @@ sed \
     "${escapeHtmlSedProcessing[@]}" \
     -e 's@\[\(00\?;\)\?30m\([^]*\)\[0\{0,2\}m@<span style="color: #2e3436">\2</span>@g' \
     -e 's@\[\(00\?;\)\?31m\([^]*\)\[0\{0,2\}m@<span style="color: #cc0000">\2</span>@g' \
-    -e 's@\[\(00\?;\)\?32m\([^]*\)\[0\{0,2\}m@<span style="color: #4e9a96">\2</span>@g' \
+    -e 's@\[\(00\?;\)\?32m\([^]*\)\[0\{0,2\}m@<span style="color: #4e9a06">\2</span>@g' \
     -e 's@\[\(00\?;\)\?33m\([^]*\)\[0\{0,2\}m@<span style="color: #c4a000">\2</span>@g' \
     -e 's@\[\(00\?;\)\?34m\([^]*\)\[0\{0,2\}m@<span style="color: #3565a4">\2</span>@g' \
     -e 's@\[\(00\?;\)\?35m\([^]*\)\[0\{0,2\}m@<span style="color: #75507b">\2</span>@g' \
@@ -391,7 +391,7 @@ sed \
     -e 's@\[0\?4m\([^]*\)\[0\{0,2\}m@<i>\1</i>@g' \
     -e 's@\[0\?4;30m\([^]*\)\[0\{0,2\}m@<span style="font-style: italic; color: #2e3436">\1</span>@g' \
     -e 's@\[0\?4;31m\([^]*\)\[0\{0,2\}m@<span style="font-style: italic; color: #cc0000">\1</span>@g' \
-    -e 's@\[0\?4;32m\([^]*\)\[0\{0,2\}m@<span style="font-style: italic; color: #4e9a96">\1</span>@g' \
+    -e 's@\[0\?4;32m\([^]*\)\[0\{0,2\}m@<span style="font-style: italic; color: #4e9a06">\1</span>@g' \
     -e 's@\[0\?4;33m\([^]*\)\[0\{0,2\}m@<span style="font-style: italic; color: #c4a000">\1</span>@g' \
     -e 's@\[0\?4;34m\([^]*\)\[0\{0,2\}m@<span style="font-style: italic; color: #3565a4">\1</span>@g' \
     -e 's@\[0\?4;35m\([^]*\)\[0\{0,2\}m@<span style="font-style: italic; color: #75507b">\1</span>@g' \
