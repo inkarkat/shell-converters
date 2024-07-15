@@ -365,6 +365,15 @@ indexedBackgroundColorTranslation=("${indexedBackgroundColorTranslation[@]/color
 
 sed \
     "${escapeHtmlSedProcessing[@]}" \
+    -e 's@\[\(0\?[014]\?;\)\?\(3[0-7]\);40m\([^]*\)\(\[0\{0,2\}m\)@[\1\2m<span style="background-color: #2e3436">\3</span>\4@g' \
+    -e 's@\[\(0\?[014]\?;\)\?\(3[0-7]\);41m\([^]*\)\(\[0\{0,2\}m\)@[\1\2m<span style="background-color: #cc0000">\3</span>\4@g' \
+    -e 's@\[\(0\?[014]\?;\)\?\(3[0-7]\);42m\([^]*\)\(\[0\{0,2\}m\)@[\1\2m<span style="background-color: #4e9a06">\3</span>\4@g' \
+    -e 's@\[\(0\?[014]\?;\)\?\(3[0-7]\);43m\([^]*\)\(\[0\{0,2\}m\)@[\1\2m<span style="background-color: #c4a000">\3</span>\4@g' \
+    -e 's@\[\(0\?[014]\?;\)\?\(3[0-7]\);44m\([^]*\)\(\[0\{0,2\}m\)@[\1\2m<span style="background-color: #3565a4">\3</span>\4@g' \
+    -e 's@\[\(0\?[014]\?;\)\?\(3[0-7]\);45m\([^]*\)\(\[0\{0,2\}m\)@[\1\2m<span style="background-color: #75507b">\3</span>\4@g' \
+    -e 's@\[\(0\?[014]\?;\)\?\(3[0-7]\);46m\([^]*\)\(\[0\{0,2\}m\)@[\1\2m<span style="background-color: #06989a">\3</span>\4@g' \
+    -e 's@\[\(0\?[014]\?;\)\?\(3[0-7]\);47m\([^]*\)\(\[0\{0,2\}m\)@[\1\2m<span style="background-color: #d3d7cf">\3</span>\4@g' \
+    \
     -e 's@\[\(00\?;\)\?30m\([^]*\)\[0\{0,2\}m@<span style="color: #2e3436">\2</span>@g' \
     -e 's@\[\(00\?;\)\?31m\([^]*\)\[0\{0,2\}m@<span style="color: #cc0000">\2</span>@g' \
     -e 's@\[\(00\?;\)\?32m\([^]*\)\[0\{0,2\}m@<span style="color: #4e9a06">\2</span>@g' \
@@ -373,6 +382,15 @@ sed \
     -e 's@\[\(00\?;\)\?35m\([^]*\)\[0\{0,2\}m@<span style="color: #75507b">\2</span>@g' \
     -e 's@\[\(00\?;\)\?36m\([^]*\)\[0\{0,2\}m@<span style="color: #06989a">\2</span>@g' \
     -e 's@\[\(00\?;\)\?37m\([^]*\)\[0\{0,2\}m@<span style="color: #d3d7cf">\2</span>@g' \
+    \
+    -e 's@\[\(00\?;\)\?40m\([^]*\)\[0\{0,2\}m@<span style="background-color: #2e3436">\2</span>@g' \
+    -e 's@\[\(00\?;\)\?41m\([^]*\)\[0\{0,2\}m@<span style="background-color: #cc0000">\2</span>@g' \
+    -e 's@\[\(00\?;\)\?42m\([^]*\)\[0\{0,2\}m@<span style="background-color: #4e9a06">\2</span>@g' \
+    -e 's@\[\(00\?;\)\?43m\([^]*\)\[0\{0,2\}m@<span style="background-color: #c4a000">\2</span>@g' \
+    -e 's@\[\(00\?;\)\?44m\([^]*\)\[0\{0,2\}m@<span style="background-color: #3565a4">\2</span>@g' \
+    -e 's@\[\(00\?;\)\?45m\([^]*\)\[0\{0,2\}m@<span style="background-color: #75507b">\2</span>@g' \
+    -e 's@\[\(00\?;\)\?46m\([^]*\)\[0\{0,2\}m@<span style="background-color: #06989a">\2</span>@g' \
+    -e 's@\[\(00\?;\)\?47m\([^]*\)\[0\{0,2\}m@<span style="background-color: #d3d7cf">\2</span>@g' \
     -e 's@\[0\?1m\([^]*\)\[0\{0,2\}m@<b>\1</b>@g' \
     -e 's@\[0\?3m\([^]*\)\[0\{0,2\}m@<i>\1</i>@g' \
     -e 's@\[0\?4m\([^]*\)\[0\{0,2\}m@<u>\1</u>@g' \
