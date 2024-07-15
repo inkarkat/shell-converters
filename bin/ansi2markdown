@@ -51,11 +51,12 @@ do
     esac
 done
 
-sed "${additionalSedProcessing[@]}" \
-    -e 's@^ \{1,3\}\([^ ]\)@    \1@; t' \
-    -e 's@^\[0\?1m\([^]*\)\[0\{0,2\}m$@### \1\n@' \
-    -e 's@\[0\?1m\([^]*\)\[0\{0,2\}m@**\1**@' \
-    -e 's@\[0\?3m\([^]*\)\[0\{0,2\}m@_\1_@' \
-    "${linkSedProcessing[@]}" "$@" | \
-	"${ANSI2HTML:-ansi2htmltags}" "${ansi2htmlArgs[@]}" | \
-	noansi
+nocontrols --keep-color -- "$@" \
+    | sed "${additionalSedProcessing[@]}" \
+	    -e 's@^ \{1,3\}\([^ ]\)@    \1@; t' \
+	    -e 's@^\[0\?1m\([^]*\)\[0\{0,2\}m$@### \1\n@' \
+	    -e 's@\[0\?1m\([^]*\)\[0\{0,2\}m@**\1**@' \
+	    -e 's@\[0\?3m\([^]*\)\[0\{0,2\}m@_\1_@' \
+	    "${linkSedProcessing[@]}" \
+    | "${ANSI2HTML:-ansi2htmltags}" "${ansi2htmlArgs[@]}" \
+    | noansi
