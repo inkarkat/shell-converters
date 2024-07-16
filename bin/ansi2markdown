@@ -6,6 +6,7 @@ printUsage()
     ansi2htmltags --help 2>&1 | sed \
 	-e '1s#^.*$#Convert (some basic) ANSI escape sequences to Markdown format [with http(s):// URLs turned into a link].#' \
 	-e '2b removeFirstParagraphLoop' \
+	-e '/\bnoansi\b\|^Note: To avoid accidental left-over ANSI escape sequences\|-N|--no-html-escaping \[\.\.\.\]$/d' \
 	-e '/^ *--tag|-t/i\
     --tag|-t ```[INFO-STRING]\n			Wrap in a fenced code block.' \
 	-e '/^SEE ALSO:$/,$d' \
