@@ -1,0 +1,56 @@
+#!/bin/bash
+set -o pipefail
+
+printUsage()
+{
+    cat <<HELPTEXT
+Convert (some basic) ANSI escape sequences to similar-looking Unicode ones.
+HELPTEXT
+    echo
+    printf 'Usage: %q %s\n' "$(basename "$1")" '[--] FILE [...] [-?|-h|--help]'
+}
+
+while [ $# -ne 0 ]
+do
+    case "$1" in
+	--help|-h|-\?)	shift; printUsage "$0"; exit 0;;
+	--)	    shift; break;;
+	-*)	    { echo "ERROR: Unknown option \"$1\"!"; echo; printUsage "$0"; } >&2; exit 2;;
+	*)	    break;;
+    esac
+done
+
+nocontrols --keep-color -- "$@" \
+    | python3 -c '
+import re
+import sys
+
+def math_SansSerifBold(match):
+    return range_tr(match, (0x30, 0x39, 0x1D7EC), (0x41, 0x5a, 0x1D5D4), (0x61, 0x7a, 0x1D5EE))
+
+def math_SansSerifItalic(match):
+    return range_tr(match, (0x41, 0x5a, 0x1D608), (0x61, 0x7a, 0x1D622))
+
+def math_DoubleStruck(match):
+    return range_tr(match, (0x30, 0x39, 0x1D7D8), (0x41, 0x5a, 0x1D538), (0x61, 0x7a, 0x1D552))
+
+def transform_matches(input, pattern, transform_function):
+    return re.sub(pattern, transform_function, input)
+
+def range_tr(match, *ranges):
+    return "".join(chr(transform(ord(char), *ranges)) for char in match.group(1))
+
+def transform(ordinal, *ranges):
+    for start, end, transform_start in ranges:
+        if start <= ordinal <= end:
+            return ordinal - start + transform_start
+    return ordinal
+
+for line in sys.stdin:
+    line = line.strip()
+    line = transform_matches(line, r"^\[0?1m([^]{1,79})\[0{0,2}m:$", math_DoubleStruck)
+    line = transform_matches(line, r"^\[0?1m([^]{1,79}):\[0{0,2}m$", math_DoubleStruck)
+    line = transform_matches(line, r"\[0?1m([^]+)\[0{0,2}m", math_SansSerifBold)
+    line = transform_matches(line, r"\[0?3m([^]+)\[0{0,2}m", math_SansSerifItalic)
+    print(line)
+' | noansi
